@@ -3,15 +3,17 @@
 
 \documentclass{article}
 \usepackage[letterpaper, textwidth=5.5in, textheight=9.0in]{geometry}
-\usepackage{setspace}
 \usepackage{graphicx} % Required for inserting images
 
 % text and typesetting macros
-\renewcommand{\paragraph}[1]{\medskip\par\noindent{\textbf{#1}}~---}
+\usepackage{setspace}
 \setstretch{1.08}
+\renewcommand{\paragraph}[1]{\medskip\par\noindent{\textbf{#1}}~---}
 \sloppy\sloppypar\raggedbottom
 \frenchspacing
 \newcommand{\documentname}{\textsl{Article}}
+\newcommand{\sectionname}{Section}
+\newcommand{\secref}[1]{\sectionname~\ref{#1}}
 
 % math macros
 \usepackage{amsmath}
@@ -27,7 +29,7 @@
 New clocks for timing experiments:\\ Finding every coherent periodic variable star in the NASA \textsl{Kepler} data
 }
 \author{Nana Miller\footnote{foo} \and David W. Hogg\footnote{bar}}
-\date{August 2026}
+\date{2026 August}
 
 \begin{document}
 \maketitle
@@ -36,7 +38,7 @@ New clocks for timing experiments:\\ Finding every coherent periodic variable st
   Precise timings of astrophysical clocks (pulsars and stellar p-modes, for example) have delivered many important discoveries and measurements (gravitational waves and exoplanets, for example).
   The NASA \textsl{Kepler} Mission made a total of more than $10^{10}$ precise photometric time-series measurements on  $2\times10^5$ stars.
   Here we search these data for phase-coherent signals that can be used as clocks.
-  A signal is phase-coherent, for us, if it shows very good phase stability; that is, it does not drift far in oscillation phase over the 4.1-year Mission lifetime.  
+  A signal is coherent, for us, if it shows very good phase stability; that is, it does not drift far in oscillation phase over the 4.1-year Mission lifetime.  
   It makes a good clock if it is also informative (in the Fisher sense); we define a ``clock value'' that increases with frequency and with the magnitude of gradients in brightness with respect to phase.
   A search of the entire set of \textsl{Kepler} light curves yields \hogg{what number} of periodic variability signals that are high in clock value and high in phase stability.
   These signals are mainly produced by thermal pulsations (as in delta Scuti stars) and eclipsing binaries, but we do not yet have a complete classification.
@@ -44,7 +46,7 @@ New clocks for timing experiments:\\ Finding every coherent periodic variable st
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
-The first solid empirical evidence for the existence of gravitational waves came from very precise timing of the binary pulsar system PSR~1913+16 \cite{hulsetaylor}:
+The first solid empirical evidence for the existence of gravitational waves came from very precise timing of the binary pulsar system PSR~1913+16 \cite{binarypulsar}:
 The system shows orbital decay consistent with that expected from the general relativistic prediction of radiation.
 This discovery involved incredibly precise timing measurements; it was only possible because the binary-pulsar system delivers high-frequency pulse trains that are coherent over many years.
 
@@ -57,7 +59,7 @@ It is this phase stability (plus high amplitude $A$ and frequency $\omega$) that
 
 Long before the PSR~1913+16 timing campaigns, the precise timing of the orbital phases of the moons of Jupiter were used to constrain the speed of light (or, alternatively, the size of the Earth's orbit) \cite{roemer}.
 Now precise timing of Solar System phenomena is what gives us such an extremely precise value for the Astronomical Unit \cite{au}; it is the most precisely known of all astronomical quantities (by far).
-Going further precise timing of astrophysical signals is being used to constrain the stochastic gravitational-wave background \cite{pta}, find orbital companions to pulsating stars \cite{murphy}, discover non-transiting planets in transiting systems \cite{ttvs}, among many other astrophysical applications.
+Going further precise timing of astrophysical signals is being used to constrain the stochastic gravitational-wave background \cite{pta}, find orbital companions to pulsating stars \cite{murphy}, characterize planets in transiting systems \cite{ttvs}, among many other astrophysical applications.
 We ourselves have developed a ``$\Phi$M radio'' technique \cite{phimradio} for searching for planetary-companion signals hidden in light curves that display coherent oscillations.
 
 Many of the astrophysical searches for coherent timing signals are bespoke, in the sense that they involve looking for very specific kinds of oscillations or signals in very specific kinds of objects.
@@ -67,13 +69,22 @@ Any coherent mode we find can be searched for companions, accelerations, orbital
 
 \section{Assumptions and choices}
 
-\paragraph{Kepler data and uncertainties}
-\hogg{make sure notation here carries through the whole document}
-\hogg{we must use $j$ not $i$ for indices because $i=\sqrt{-1}$}
-
-\paragraph{Data filtering and normalization}
+\paragraph{Data and uncertainties}
+The setup here is that the \textsl{Kepler} mission (after some filtering; see \secref{sec:data}) delivers a set of $N$ brightness measurements $y_j$ (with $1\leq j\leq N$) of a star with associated uncertainties $\sigma_j$.
+These measurements could be in any unit system (we will use dimensionless normalized fluxes); all we care about is that the uncertainties $\sigma_j$ are in the same units.
+We will assume that the uncertainties are reasonable estimates, in the sense that it is safe to use the inverse variances $\sigma_j^{-2}$ as data weights in the weighted least squares fitting we will do below.
+There is no other sense in which these uncertainties need be accurate for our purposes.
 
 \paragraph{Times and exposure times}
+Each measurement $y_j$ of the star comes at a time $t_j$.
+This time is a ``barycentric'' time such that precisely periodic signals coming from outside the Solar System will be precisely periodic in this time system.
+Because of the barycentric corrections, these times will not lie on a precisely periodic grid in barycentric time.
+That's good; nothing in what follows will assume that the time grid is uniform or periodic.
+
+Each measurement $y_j$ was taken in a finite exposure time $T_j$.
+That is, it is some kind of mean flux over a finite time period.
+The details of the \textsl{Kepler} measurement process is complicated.
+\hogg{We need to decide how much we do here; do we use the integrated design matrix or go back to a pure sampling form.}
 
 \paragraph{Frequencies and frequency content}
 We are looking for purely periodic signals, which (without loss of generality) can be modeled with Fourier series.
@@ -82,7 +93,8 @@ That is, we are assuming, for each star with a candidate periodic signal,
     y_j &= \sum_{m=-M}^M a_m\,\exp(i\,m\,\omega_0\,t_j) + s_j \label{eq:signal} \\
     a_{m} &= a^\ast_{-m}
 \end{align}
-for some fundamental angular frequency $\omega_0$ (frequency $f_0=\omega_0/(2\pi)$, where
+for some fundamental angular frequency $\omega_0$ (frequency $f_0$; $\omega_0=2\pi\,f_0$),
+where
 $M$ sets the model complexity (number of modes),
 the $s_j$ are residuals away from periodic signal,
 and the complex conjugate condition keeps the expectation of everything real.
@@ -130,7 +142,10 @@ That's not precisely correct, because the power spectrum (in time) of those resi
 In addition to all of this, there are a number of relatively arbitrary decisions we made intuitively.
 These include EXAMPLES HERE.
 
-\section{Methods}
+\section{Data}\label{sec:data}
+\hogg{NANA write what you used to get the data and what normalizations or other filtering you did.}
+
+\section{Methods}\label{sec:method}
 \hogg{Everything in what follows is jumbled up; I will try to get it at least arranged reasonably.}
 
 For a given light curve with a periodic change in flux $f(t)$, we find the frequency $\omega$ via the Lomb-Scargle periodogram. \hogg{What frequency grid did we put down for this?}
@@ -152,8 +167,8 @@ which is also a linear equations of form
 Ax = b
 \end{equation}
 
-where where $A$ is the design matrix whose $i$-th row is 
-$[1, \cos(\omega t_i), \sin(\omega t_i), \cos(2\omega t_i), \sin(2\omega t_i), \dots, \cos(M\omega t_i), \sin(M\omega t_i)]$,  $x$ is the column of unknown coefficients $[a_0, a_1, b_1, ..., a_{32}, b_{32}]$ and $b$ is the flux.
+where where $A$ is the design matrix whose $j$-th row is 
+$[1, \cos(\omega t_j), \sin(\omega t_j), \cos(2\omega t_j), \sin(2\omega t_j), \dots, \cos(M\omega t_j), \sin(M\omega t_j)]$,  $x$ is the column of unknown coefficients $[a_0, a_1, b_1, ..., a_{32}, b_{32}]$ and $b$ is the flux.
 
 \medskip
 We solve for the $x$ values with weighted-least squares with equation 
@@ -161,7 +176,7 @@ We solve for the $x$ values with weighted-least squares with equation
 \begin{equation}
 x = (A^T W A)^{-1} A^T W b
 \end{equation}
-where $W$ is a diagonal matrix of weights $w_i$, derived from the flux uncertainties.
+where $W$ is a diagonal matrix of weights $w_j$, derived from the flux uncertainties.
 
 \medskip
 Here are  plots of varying number of harmonics where the red line is the fitted Fourier series and the black dots are a phase folded light curve at the refined frequency.
@@ -169,13 +184,13 @@ Here are  plots of varying number of harmonics where the red line is the fitted 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\linewidth]{Screenshot 2026-05-23 at 4.11.34 PM.png}
+%    \includegraphics[width=0.5\linewidth]{Screenshot 2026-05-23 at 4.11.34 PM.png}
     \label{fig:placeholder}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\linewidth]{Screenshot 2026-05-23 at 4.11.53 PM.png}
+%    \includegraphics[width=0.5\linewidth]{Screenshot 2026-05-23 at 4.11.53 PM.png}
     \label{fig:placeholder}
 \end{figure}
 
@@ -200,13 +215,10 @@ restarts each.
 
 
 
-\section{Data}
-\hogg{NANA write what you used to get the data and what normalization you did.}
-
-\section{Methods and results}
+\section{Results}\label{sec:results}
 \hogg{NANA write here.}
 
-\section{Discussion}
+\section{Discussion}\label{sec:discussion}
 \hogg{What can we say about our HR diagram?}
 
 \hogg{Do we really believe our above-Nyquist signals?}
@@ -224,4 +236,7 @@ for valuable discussions and technical advice.
 The Flatiron Institute is a division of the Simons Foundation.
 All code used for this project is available at \hogg{URL HERE}.
 
+\raggedright\footnotesize
+\bibliographystyle{plain}
+\bibliography{clocks}
 \end{document}
