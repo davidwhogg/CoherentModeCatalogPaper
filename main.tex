@@ -95,14 +95,22 @@ That is, we are assuming, for each star with a candidate periodic signal,
 \end{align}
 for some fundamental angular frequency $\omega_0$ (frequency $f_0$; $\omega_0=2\pi\,f_0$),
 where
-$M$ sets the model complexity (number of modes),
+$M$ sets the model complexity (number of modes) and also the maximum permitted angular frequency $M\,\omega_0$,
 the $s_j$ are residuals away from periodic signal,
 and the complex conjugate condition keeps the expectation of everything real.
 
-\hogg{Because of the barycentric ... irregular ... In principle we can detect signals in the ... Nyquist}
+Because of the barycentric corrections, the times $t_j$ are not on a precisely regular grid.
+For this reason, we break the Nyquist symmetry and can, in principle, see frequencies higher than Nyquist (see, for example, \cite{supernyquist}).
+However, because of the finite integration time, these signals tend to be, in the actual \textsl{Kepler} long-cadence data, highly suppressed.
+In the long-cadence data, Nyquist is roughly 24\,day$^{-1}$.
+So we are not going to look for clocks with fundamental frequencies $f_0$ above Nyquist.
+Furthermore, we are going to set $M$ for each star such that the maximum frequency $M\,f_0$ is below Nyquist.
 
-\paragraph{Red noise}
-\hogg{We aren't assuming there is \emph{no} red noise; we are assuming it doesn't mess up our measurements.}
+\paragraph{Red noise and noise model}
+Most real stars have, in addition to measurement noise (essentially photon shot noise plus some read noise), have red noise arising from intrinsic variability.
+Here we are going to assume not that this doesn't exist, but rather that it doesn't affect significantly our measurements.
+The phase stability of our clocks is going to be assessed empirically, and the uncertainty inverse variance we will use in our information theory (below) will also be empirical.
+Thus we aren't extremely sensitive to the detail of the mechanical origins of the noise in the light curves.
 
 \paragraph{Information theory}
 The information per unit time in a periodic signal about phase variations or phase delays is proportional to the amplitude of the variability and proportional to the frequency.
