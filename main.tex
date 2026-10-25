@@ -3,15 +3,17 @@
 
 \documentclass{article}
 \usepackage[letterpaper, textwidth=5.5in, textheight=9.0in]{geometry}
-\usepackage{setspace}
 \usepackage{graphicx} % Required for inserting images
 
 % text and typesetting macros
-\renewcommand{\paragraph}[1]{\medskip\par\noindent{\textbf{#1}}~---}
+\usepackage{setspace}
 \setstretch{1.08}
+\renewcommand{\paragraph}[1]{\medskip\par\noindent{\textbf{#1}}~---}
 \sloppy\sloppypar\raggedbottom
 \frenchspacing
 \newcommand{\documentname}{\textsl{Article}}
+\newcommand{\sectionname}{Section}
+\newcommand{\secref}[1]{\sectionname~\ref{#1}}
 
 % math macros
 \usepackage{amsmath}
@@ -35,12 +37,12 @@ New clocks for timing experiments:\\ Finding every coherent periodic variable st
 \begin{abstract}\noindent
   Precise timings of astrophysical clocks (pulsars and stellar p-modes, for example) have delivered many important discoveries and measurements (gravitational waves and exoplanets, for example).
   The NASA \textsl{Kepler} Mission made a total of more than $10^{10}$ precise photometric time-series measurements on  $2\times10^5$ stars.
-  Here we search these data for phase-coherent signals that can be used as clocks.
-  A signal is phase-coherent, for us, if it shows very good phase stability; that is, it does not drift far in oscillation phase over the 4.1-year Mission lifetime.  
-  It makes a good clock if it is also informative (in the Fisher sense); we define a ``clock value'' that increases with frequency and with the magnitude of gradients in brightness with respect to phase.
-  A search of the entire set of \textsl{Kepler} light curves yields \hogg{what number} of periodic variability signals that are high in clock value and high in phase stability.
-  These signals are mainly produced by thermal pulsations (as in delta Scuti stars) and eclipsing binaries, but we do not yet have a complete classification.
-  We show a set of examples and deliver a complete catalog of  stars that can be used in precise timing experiments.
+  Here we search these data for periodic signals that can be used as clocks.
+  A signal makes a good clock if it is also informative (in the Fisher sense); we define a ``clock value'' that increases with frequency and with the magnitude of gradients in brightness with respect to phase.
+  A search of the entire set of \textsl{Kepler} light curves yields \hogg{what number of} periodic variability signals that are high enough in clock value that they could in principle detect light-travel time variations (R\o mer effect) at the level created by the presence of a Jupiter-like companion.
+  Of course, because there are ill-understood noise sources, many clocks that are excellent in principle are not great in practice.
+  The best clocks are mainly either thermal pulsators (as in delta Scuti stars) or eclipsing binaries, but we do not yet have a complete classification of all good signals.
+  We deliver a complete catalog, visualize a set of examples, and show that some of the clocks do indeed reveal planet-mass companions.
 \end{abstract}
 
 \paragraph{Alternative abstract}
@@ -56,7 +58,7 @@ We demonstrate that the clocks we find can be used to detect long-period planets
 We rediscover a known system and find several new convincing candidates.
 
 \section{Introduction}\label{sec:intro}
-The first solid empirical evidence for the existence of gravitational waves came from very precise timing of the binary pulsar system PSR~1913+16 \cite{hulsetaylor}:
+The first solid empirical evidence for the existence of gravitational waves came from very precise timing of the binary pulsar system PSR~1913+16 \cite{binarypulsar}:
 The system shows orbital decay consistent with that expected from the general relativistic prediction of radiation.
 This discovery involved incredibly precise timing measurements; it was only possible because the binary-pulsar system delivers high-frequency pulse trains that are coherent over many years.
 
@@ -69,40 +71,58 @@ It is this phase stability (plus high amplitude $A$ and frequency $\omega$) that
 
 Long before the PSR~1913+16 timing campaigns, the precise timing of the orbital phases of the moons of Jupiter were used to constrain the speed of light (or, alternatively, the size of the Earth's orbit) \cite{roemer}.
 Now precise timing of Solar System phenomena is what gives us such an extremely precise value for the Astronomical Unit \cite{au}; it is the most precisely known of all astronomical quantities (by far).
-Going further precise timing of astrophysical signals is being used to constrain the stochastic gravitational-wave background \cite{pta}, find orbital companions to pulsating stars \cite{murphy}, discover non-transiting planets in transiting systems \cite{ttvs}, among many other astrophysical applications.
+Going further precise timing of astrophysical signals is being used to constrain the stochastic gravitational-wave background \cite{pta}, find orbital companions to pulsating stars \cite{murphy}, characterize planets in transiting systems \cite{ttvs}, among many other astrophysical applications.
 We ourselves have developed a ``$\Phi$M radio'' technique \cite{phimradio} for searching for planetary-companion signals hidden in light curves that display coherent oscillations.
 
 Many of the astrophysical searches for coherent timing signals are bespoke, in the sense that they involve looking for very specific kinds of oscillations or signals in very specific kinds of objects.
 What is not known is: How many stars---and what kinds of stars---display signals that could be used as clocks for timing experiments?
-Here we take the very first step towards answering this question by looking for phase-stable sinusoidal signals in the light curves of stars observed by the NASA \textsl{Kepler} Mission \cite{kepler}.
-Any coherent mode we find can be searched for companions, accelerations, orbital decays, or internal changes that might imprint as informative (but small) phase shifts.
+Here we take the very first step towards answering this question by looking for phase-stable periodic signals in the light curves of stars observed by the NASA \textsl{Kepler} Mission \cite{kepler}.
+Any coherent oscillator we find can be searched for companions, accelerations, orbital decays, or internal changes that might imprint as informative (but small) phase shifts.
 
 \section{Assumptions and choices}
 
-\paragraph{Kepler data and uncertainties}
-\hogg{make sure notation here carries through the whole document}
-\hogg{we must use $j$ not $i$ for indices because $i=\sqrt{-1}$}
-
-\paragraph{Data filtering and normalization}
+\paragraph{Data and uncertainties}
+The setup here is that the \textsl{Kepler} mission (after some filtering; see \secref{sec:data}) delivers a set of $N$ brightness measurements $y_j$ (with $1\leq j\leq N$) of a star with associated uncertainties $\sigma_j$.
+These measurements could be in any unit system (we will use dimensionless normalized fluxes); all we care about is that the uncertainties $\sigma_j$ are in the same units.
+We will assume that the uncertainties are reasonable estimates, in the sense that it is safe to use the inverse variances $\sigma_j^{-2}$ as data weights in the weighted least squares fitting we will do below.
+There is no other sense in which these uncertainties need be accurate for our purposes.
 
 \paragraph{Times and exposure times}
+Each measurement $y_j$ of the star comes at a time $t_j$.
+This time is a ``barycentric'' time such that precisely periodic signals coming from outside the Solar System will be precisely periodic in this time system.
+Because of the barycentric corrections, these times will not lie on a precisely periodic grid in barycentric time.
+That's good; nothing in what follows will assume that the time grid is uniform or periodic.
+
+Each measurement $y_j$ was taken in a finite exposure time $T_j$.
+That is, it is some kind of mean flux over a finite time period.
+The details of the \textsl{Kepler} measurement process is complicated.
+\hogg{We need to decide how much we do here; do we use the integrated design matrix or go back to a pure sampling form.}
 
 \paragraph{Frequencies and frequency content}
 We are looking for purely periodic signals, which (without loss of generality) can be modeled with Fourier series.
-That is, we are assuming, for each star with a candidate periodic signal,
+That is, we are assuming, for each star with a candidate periodic signal at frequency $f_0$,
 \begin{align}
     y_j &= \sum_{m=-M}^M a_m\,\exp(i\,m\,\omega_0\,t_j) + s_j \label{eq:signal} \\
-    a_{m} &= a^\ast_{-m}
+    a_{m} &= a^\ast_{-m} \\
+    \omega_0 &= 2\pi\,f_0 ~,
 \end{align}
-for some fundamental angular frequency $\omega_0$ (frequency $f_0=\omega_0/(2\pi)$, where
-$M$ sets the model complexity (number of modes),
+where
+$M$ sets the model complexity (number of modes) and also the maximum permitted angular frequency $M\,\omega_0$,
 the $s_j$ are residuals away from periodic signal,
 and the complex conjugate condition keeps the expectation of everything real.
 
-\hogg{Because of the barycentric ... irregular ... In principle we can detect signals in the ... Nyquist}
+Because of the barycentric corrections, the times $t_j$ are not on a precisely regular grid.
+For this reason, we break the Nyquist symmetry and can, in principle, see frequencies higher than Nyquist (see, for example, \cite{supernyquist}).
+However, because of the finite integration time, these signals tend to be, in the actual \textsl{Kepler} long-cadence data, highly suppressed.
+In the long-cadence data, Nyquist is roughly 24\,day$^{-1}$.
+So we are not going to look for clocks with fundamental frequencies $f_0$ above Nyquist.
+Furthermore, we are going to set $M$ for each star such that the maximum frequency $M\,f_0$ is below Nyquist.
 
-\paragraph{Red noise}
-\hogg{We aren't assuming there is \emph{no} red noise; we are assuming it doesn't mess up our measurements.}
+\paragraph{Red noise and noise model}
+Most real stars have, in addition to measurement noise (essentially photon shot noise plus some read noise), have red noise arising from intrinsic variability.
+Here we are going to assume not that this doesn't exist, but rather that it doesn't affect significantly our measurements.
+The phase stability of our clocks is going to be assessed empirically, and the uncertainty inverse variance we will use in our information theory (below) will also be empirical.
+Thus we aren't extremely sensitive to the detail of the mechanical origins of the noise in the light curves.
 
 \paragraph{Information theory}
 The information per unit time in a periodic signal about phase variations or phase delays is proportional to the amplitude of the variability and proportional to the frequency.
@@ -122,9 +142,9 @@ $\sigma_1^2$ is the typical uncertainty variance for an individual measurement,
 and the factor of $m^2$ appears because this expression involves the dot product of \eqref{eq:derivative} with itself.
 The information rate has units of inverse time cubed, because it is Fisher information about timing (units of inverse time squared) per unit time.
 
-The sampling rate $N/T$ is common to all \textsl{Kepler} targets; the part of the information rate \eqref{eq:inforate} that is intrinsic to the star is
+The sampling rate $N/T$ is similar for all \textsl{Kepler} targets (of similar brightness); the part of the information rate \eqref{eq:inforate} that is intrinsic to the star is
 \begin{align}
-    V &= \frac{\omega_0^2}{\sigma_1^2}\,\sum_{m=-M}^M m^2\,|a_m|^2 ~. \label{eq:value}
+    V &= \omega_0^2\,\sum_{m=-M}^M m^2\,|a_m|^2 ~. \label{eq:value}
 \end{align}
 In what follows we will call this scalar $V$ (units of inverse time squared) the ``clock value.''
 Higher value clocks---clocks with steeper lightcurve gradients and higher frequencies---are better for timing experiments.
@@ -135,6 +155,8 @@ What should be input for $\sigma^2_1$ in the clock value \eqref{eq:value}?
 It should be, roughly speaking, the variance of the empirical residuals $s_j$ after the fit \eqref{eq:signal} has been performed.
 That's not precisely correct, because the power spectrum (in time) of those residuals probably matters in detail, but accounting for that is beyond the scope here.
 
+\hogg{All of the above needs to change; we are now working on the full information in the long-cadence data set. And we have two ways to compute it, one of which isn't even shown here.}
+
 \paragraph{Deconvolution of the finite exposure time}
 \hogg{Make very clear here that we are \emph{not} working on the underlying signal, but instead the exposure-integrated or window-convolved signal. It is the clock value on the real clock.}
 
@@ -142,7 +164,15 @@ That's not precisely correct, because the power spectrum (in time) of those resi
 In addition to all of this, there are a number of relatively arbitrary decisions we made intuitively.
 These include EXAMPLES HERE.
 
-\section{Methods}
+\paragraph{Implementation notes}
+\hogg{something about LSP and then post-processing. How embarrassing is that?}
+
+\hogg{something about the task database and the workers. Pointer to the code.}
+
+\section{Data}\label{sec:data}
+\hogg{NANA write what you used to get the data and what normalizations or other filtering you did.}
+
+\section{Methods}\label{sec:method}
 \hogg{Everything in what follows is jumbled up; I will try to get it at least arranged reasonably.}
 
 For a given light curve with a periodic change in flux $f(t)$, we find the frequency $\omega$ via the Lomb-Scargle periodogram. \hogg{What frequency grid did we put down for this?}
@@ -164,8 +194,8 @@ which is also a linear equations of form
 Ax = b
 \end{equation}
 
-where where $A$ is the design matrix whose $i$-th row is 
-$[1, \cos(\omega t_i), \sin(\omega t_i), \cos(2\omega t_i), \sin(2\omega t_i), \dots, \cos(M\omega t_i), \sin(M\omega t_i)]$,  $x$ is the column of unknown coefficients $[a_0, a_1, b_1, ..., a_{32}, b_{32}]$ and $b$ is the flux.
+where where $A$ is the design matrix whose $j$-th row is 
+$[1, \cos(\omega t_j), \sin(\omega t_j), \cos(2\omega t_j), \sin(2\omega t_j), \dots, \cos(M\omega t_j), \sin(M\omega t_j)]$,  $x$ is the column of unknown coefficients $[a_0, a_1, b_1, ..., a_{32}, b_{32}]$ and $b$ is the flux.
 
 \medskip
 We solve for the $x$ values with weighted-least squares with equation 
@@ -173,7 +203,7 @@ We solve for the $x$ values with weighted-least squares with equation
 \begin{equation}
 x = (A^T W A)^{-1} A^T W b
 \end{equation}
-where $W$ is a diagonal matrix of weights $w_i$, derived from the flux uncertainties.
+where $W$ is a diagonal matrix of weights $w_j$, derived from the flux uncertainties.
 
 \medskip
 Here are  plots of varying number of harmonics where the red line is the fitted Fourier series and the black dots are a phase folded light curve at the refined frequency.
@@ -212,13 +242,10 @@ restarts each.
 
 
 
-\section{Data}
-\hogg{NANA write what you used to get the data and what normalization you did.}
-
-\section{Methods and results}
+\section{Results}\label{sec:results}
 \hogg{NANA write here.}
 
-\section{Discussion}
+\section{Discussion}\label{sec:discussion}
 \hogg{What can we say about our HR diagram?}
 
 \hogg{Do we really believe our above-Nyquist signals?}
@@ -236,4 +263,7 @@ for valuable discussions and technical advice.
 The Flatiron Institute is a division of the Simons Foundation.
 All code used for this project is available at \hogg{URL HERE}.
 
+\raggedright\footnotesize
+\bibliographystyle{plain}
+\bibliography{clocks}
 \end{document}
