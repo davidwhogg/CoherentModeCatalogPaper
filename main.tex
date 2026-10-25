@@ -29,7 +29,7 @@
 New clocks for timing experiments:\\ Finding every coherent periodic variable star in the NASA \textsl{Kepler} data
 }
 \author{Nana Miller\footnote{foo} \and David W. Hogg\footnote{bar}}
-\date{2026 August}
+\date{2026 September}
 
 \begin{document}
 \maketitle
@@ -37,12 +37,12 @@ New clocks for timing experiments:\\ Finding every coherent periodic variable st
 \begin{abstract}\noindent
   Precise timings of astrophysical clocks (pulsars and stellar p-modes, for example) have delivered many important discoveries and measurements (gravitational waves and exoplanets, for example).
   The NASA \textsl{Kepler} Mission made a total of more than $10^{10}$ precise photometric time-series measurements on  $2\times10^5$ stars.
-  Here we search these data for phase-coherent signals that can be used as clocks.
-  A signal is coherent, for us, if it shows very good phase stability; that is, it does not drift far in oscillation phase over the 4.1-year Mission lifetime.  
-  It makes a good clock if it is also informative (in the Fisher sense); we define a ``clock value'' that increases with frequency and with the magnitude of gradients in brightness with respect to phase.
-  A search of the entire set of \textsl{Kepler} light curves yields \hogg{what number} of periodic variability signals that are high in clock value and high in phase stability.
-  These signals are mainly produced by thermal pulsations (as in delta Scuti stars) and eclipsing binaries, but we do not yet have a complete classification.
-  We show a set of examples and deliver a complete catalog of  stars that can be used in precise timing experiments.
+  Here we search these data for periodic signals that can be used as clocks.
+  A signal makes a good clock if it is also informative (in the Fisher sense); we define a ``clock value'' that increases with frequency and with the magnitude of gradients in brightness with respect to phase.
+  A search of the entire set of \textsl{Kepler} light curves yields \hogg{what number of} periodic variability signals that are high enough in clock value that they could in principle detect light-travel time variations (R\o mer effect) at the level created by the presence of a Jupiter-like companion.
+  Of course, because there are ill-understood noise sources, many clocks that are excellent in principle are not great in practice.
+  The best clocks are mainly either thermal pulsators (as in delta Scuti stars) or eclipsing binaries, but we do not yet have a complete classification of all good signals.
+  We deliver a complete catalog, visualize a set of examples, and show that some of the clocks do indeed reveal planet-mass companions.
 \end{abstract}
 
 \section{Introduction}\label{sec:intro}
@@ -64,8 +64,8 @@ We ourselves have developed a ``$\Phi$M radio'' technique \cite{phimradio} for s
 
 Many of the astrophysical searches for coherent timing signals are bespoke, in the sense that they involve looking for very specific kinds of oscillations or signals in very specific kinds of objects.
 What is not known is: How many stars---and what kinds of stars---display signals that could be used as clocks for timing experiments?
-Here we take the very first step towards answering this question by looking for phase-stable sinusoidal signals in the light curves of stars observed by the NASA \textsl{Kepler} Mission \cite{kepler}.
-Any coherent mode we find can be searched for companions, accelerations, orbital decays, or internal changes that might imprint as informative (but small) phase shifts.
+Here we take the very first step towards answering this question by looking for phase-stable periodic signals in the light curves of stars observed by the NASA \textsl{Kepler} Mission \cite{kepler}.
+Any coherent oscillator we find can be searched for companions, accelerations, orbital decays, or internal changes that might imprint as informative (but small) phase shifts.
 
 \section{Assumptions and choices}
 
@@ -88,12 +88,12 @@ The details of the \textsl{Kepler} measurement process is complicated.
 
 \paragraph{Frequencies and frequency content}
 We are looking for purely periodic signals, which (without loss of generality) can be modeled with Fourier series.
-That is, we are assuming, for each star with a candidate periodic signal,
+That is, we are assuming, for each star with a candidate periodic signal at frequency $f_0$,
 \begin{align}
     y_j &= \sum_{m=-M}^M a_m\,\exp(i\,m\,\omega_0\,t_j) + s_j \label{eq:signal} \\
-    a_{m} &= a^\ast_{-m}
+    a_{m} &= a^\ast_{-m} \\
+    \omega_0 &= 2\pi\,f_0 ~,
 \end{align}
-for some fundamental angular frequency $\omega_0$ (frequency $f_0$; $\omega_0=2\pi\,f_0$),
 where
 $M$ sets the model complexity (number of modes) and also the maximum permitted angular frequency $M\,\omega_0$,
 the $s_j$ are residuals away from periodic signal,
@@ -130,9 +130,9 @@ $\sigma_1^2$ is the typical uncertainty variance for an individual measurement,
 and the factor of $m^2$ appears because this expression involves the dot product of \eqref{eq:derivative} with itself.
 The information rate has units of inverse time cubed, because it is Fisher information about timing (units of inverse time squared) per unit time.
 
-The sampling rate $N/T$ is common to all \textsl{Kepler} targets; the part of the information rate \eqref{eq:inforate} that is intrinsic to the star is
+The sampling rate $N/T$ is similar for all \textsl{Kepler} targets (of similar brightness); the part of the information rate \eqref{eq:inforate} that is intrinsic to the star is
 \begin{align}
-    V &= \frac{\omega_0^2}{\sigma_1^2}\,\sum_{m=-M}^M m^2\,|a_m|^2 ~. \label{eq:value}
+    V &= \omega_0^2\,\sum_{m=-M}^M m^2\,|a_m|^2 ~. \label{eq:value}
 \end{align}
 In what follows we will call this scalar $V$ (units of inverse time squared) the ``clock value.''
 Higher value clocks---clocks with steeper lightcurve gradients and higher frequencies---are better for timing experiments.
@@ -143,12 +143,19 @@ What should be input for $\sigma^2_1$ in the clock value \eqref{eq:value}?
 It should be, roughly speaking, the variance of the empirical residuals $s_j$ after the fit \eqref{eq:signal} has been performed.
 That's not precisely correct, because the power spectrum (in time) of those residuals probably matters in detail, but accounting for that is beyond the scope here.
 
+\hogg{All of the above needs to change; we are now working on the full information in the long-cadence data set. And we have two ways to compute it, one of which isn't even shown here.}
+
 \paragraph{Deconvolution of the finite exposure time}
 \hogg{Make very clear here that we are \emph{not} working on the underlying signal, but instead the exposure-integrated or window-convolved signal. It is the clock value on the real clock.}
 
 \paragraph{Magic numbers and decisions}
 In addition to all of this, there are a number of relatively arbitrary decisions we made intuitively.
 These include EXAMPLES HERE.
+
+\paragraph{Implementation notes}
+\hogg{something about LSP and then post-processing. How embarrassing is that?}
+
+\hogg{something about the task database and the workers. Pointer to the code.}
 
 \section{Data}\label{sec:data}
 \hogg{NANA write what you used to get the data and what normalizations or other filtering you did.}
